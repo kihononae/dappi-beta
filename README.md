@@ -206,5 +206,99 @@ If you encounter any issues or have questions:
 ---
 
 <div align="center">
-Made with ❤️ by the XP Bot team
+Made with ❤️ by the Dappi Dev Team
 </div>
+
+## Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant Member as 🧑 Member
+    participant DiscordBot as 🤖 DiscordBot
+    participant VectorDB as 🧠 VectorDB
+    participant NotionService as 📘 NotionService
+    participant MessageTemplates as ✨ MessageTemplates
+
+    Member->>DiscordBot: sends message tagging bot with XP-worthy description
+
+    DiscordBot->>VectorDB: search(content)
+    VectorDB-->>DiscordBot: topMatch (name, type, criterionId)
+
+    alt No confident match
+        DiscordBot-->>Member: "Could not match any XP criteria."
+    else Match found
+        DiscordBot->>NotionService: findMemberByUsername(usernames)
+        NotionService-->>DiscordBot: member Notion IDs
+
+        DiscordBot->>NotionService: awardXP(payload)
+        NotionService-->>DiscordBot: success/failure
+
+        DiscordBot->>MessageTemplates: getRandom()
+        MessageTemplates-->>DiscordBot: "Nice work!"
+
+        DiscordBot-->>Member: ✅ XP awarded for **{criterion}** to {usernames}
+    end
+```
+
+## UML Diagram
+```mermaid
+classDiagram
+    class DiscordBot {
+        +handleMessage()
+        +processXP()
+    }
+
+    class VectorDB {
+        +search(query: string): SearchResult[]
+        +buildIndex(criteria: Criterion[])
+    }
+
+    class NotionService {
+        +getCriteria(): Promise<Criterion[]>
+        +findMemberByUsername(username: string): Promise<Member>
+        +awardXP(payload: XPEventPayload): Promise<XPLogEntry>
+    }
+
+    class MessageTemplates {
+        +getRandom(): string
+    }
+
+    class Criterion {
+        +name: string
+        +description: string
+        +type: "event" | "workshop" | "project"
+        +notionId: string
+    }
+
+    class Member {
+        +username: string
+        +notionId: string
+        +totalXP: number
+    }
+
+    class XPEventPayload {
+        +message: string
+        +userIds: string[]
+        +eventType: string
+        +criterionId: string
+    }
+
+    class SearchResult {
+        +name: string
+        +type: string
+        +score: number
+        +notionId: string
+    }
+
+    DiscordBot --> VectorDB : uses
+    DiscordBot --> NotionService : uses
+    DiscordBot --> MessageTemplates : uses
+
+    VectorDB --> Criterion : embeds
+    VectorDB --> SearchResult : returns
+
+    NotionService --> Criterion : returns
+    NotionService --> Member : returns
+    NotionService --> XPEventPayload : accepts
+```
+
+

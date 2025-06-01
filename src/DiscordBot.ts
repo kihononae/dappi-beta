@@ -1,4 +1,5 @@
 import { Client, GatewayIntentBits, Message } from 'discord.js';
+import { Logger } from './Logger';
 
 export class DiscordBot {
     private client: Client;
@@ -19,16 +20,18 @@ export class DiscordBot {
         this.client.login(token);
 
         this.client.on('ready', () => {
-            console.log(`✅ Logged in as ${this.client.user?.tag}`);
+            Logger.info(`✅ Logged in as ${this.client.user?.tag}`);
         });
 
         this.client.on('messageCreate', this.handleMessage.bind(this));
     }
 
+    // This is dappi's message listener
     private async handleMessage(message: Message) {
         // Only reply if the bot is mentioned
         if (message.mentions.has(this.client.user!) && !message.author.bot) {
             await message.reply("Hi 👋");
+            Logger.info(`Replied to ${message.author.tag} in #${(message.channel as any).name || message.channelId}`);
         }
     }
 }

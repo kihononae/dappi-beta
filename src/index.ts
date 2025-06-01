@@ -1,3 +1,3 @@
-import { DiscordBot } from './discord/DiscordBot.js';
+import { DiscordBot } from './DiscordBot';
 
 new DiscordBot();
