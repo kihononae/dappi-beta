@@ -30,7 +30,7 @@ export class DiscordBot {
     private async handleMessage(message: Message) {
         // Only reply if the bot is mentioned
         if (message.mentions.has(this.client.user!) && !message.author.bot) {
-            await message.reply("Hi 👋");
+            await message.reply("Bye 👋");
             Logger.info(`Replied to ${message.author.tag} in #${(message.channel as any).name || message.channelId}`);
         }
     }

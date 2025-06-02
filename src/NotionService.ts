@@ -3,7 +3,7 @@
 import { Client } from '@notionhq/client';
 import dotenv from 'dotenv';
 import { XpCriteria } from './types/XpCriteria';
-import { Logger } from './Logger'; // Add this import
+import { Logger } from './Logger';
 
 dotenv.config();
 

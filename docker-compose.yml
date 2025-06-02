@@ -5,9 +5,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: devrunner
     container_name: dappi-beta
     restart: unless-stopped
     env_file: .env
     volumes:
-      - ./src:/app/src
-    command: ["node", "dist/index.js"]
+      - ./src:/app/src                      # Live TS code
+      - ./tsconfig.json:/app/tsconfig.json  # TS config
+      - ./package.json:/app/package.json    # Scripts and deps
+      - ./package-lock.json:/app/package-lock.json
+      - ./.env:/app/.env
+    command: ["npm", "run", "dev"]
