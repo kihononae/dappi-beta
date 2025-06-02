@@ -242,63 +242,49 @@ sequenceDiagram
 ## UML Diagram
 ```mermaid
 classDiagram
-    class DiscordBot {
-        +handleMessage()
-        +processXP()
+    class NotionService {
+        +fetchXpCriteria() Promise<XpCriteria[]>
+    }
+
+    class XpCriteriaAdapter {
+        +xpCriteriaToVectorDocs(criteria: XpCriteria[]) VectorDocument[]
+    }
+
+    class VectorManager {
+        +refreshXpCriteria() Promise<boolean>
     }
 
     class VectorDB {
-        +search(query: string): SearchResult[]
-        +buildIndex(criteria: Criterion[])
+        <<interface>>
+        +buildIndex(docs: VectorDocument[]) Promise<void>
+        +search(query: string, topK) Promise<VectorDocument[]>
     }
 
-    class NotionService {
-        +getCriteria(): Promise<Criterion[]>
-        +findMemberByUsername(username: string): Promise<Member>
-        +awardXP(payload: XPEventPayload): Promise<XPLogEntry>
+    class LocalVectorDB {
+        +buildIndex(docs: VectorDocument[]) Promise<void>
+        +search(query: string, topK) Promise<VectorDocument[]>
     }
 
-    class MessageTemplates {
-        +getRandom(): string
+    class XpCriteria {
+        -name: string
+        -type: string
+        -description: string
+        -notion_id: string
     }
 
-    class Criterion {
-        +name: string
-        +description: string
-        +type: "event" | "workshop" | "project"
-        +notionId: string
+    class VectorDocument {
+        -id: string
+        -content: string
+        -metadata: Record<string, any>
     }
 
-    class Member {
-        +username: string
-        +notionId: string
-        +totalXP: number
-    }
-
-    class XPEventPayload {
-        +message: string
-        +userIds: string[]
-        +eventType: string
-        +criterionId: string
-    }
-
-    class SearchResult {
-        +name: string
-        +type: string
-        +score: number
-        +notionId: string
-    }
-
-    DiscordBot --> VectorDB : uses
-    DiscordBot --> NotionService : uses
-    DiscordBot --> MessageTemplates : uses
-
-    VectorDB --> Criterion : embeds
-    VectorDB --> SearchResult : returns
-
-    NotionService --> Criterion : returns
-    NotionService --> Member : returns
-    NotionService --> XPEventPayload : accepts
+    %% Relationships
+    VectorManager --> NotionService : uses
+    VectorManager --> XpCriteriaAdapter : uses
+    VectorManager --> VectorDB : uses
+    LocalVectorDB ..|> VectorDB : implements
+    XpCriteriaAdapter --> XpCriteria : transforms
+    VectorDB --> VectorDocument : stores
 ```
 
 
