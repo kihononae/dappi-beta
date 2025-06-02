@@ -5,11 +5,17 @@ import { getVectorDb } from './VectorDB';
 import { XpCriteriaMetadata } from '../types/metadata/XpCriteriaMetadata';
 import { Logger } from '../Logger';
 
+let criteria: XpCriteriaMetadata[] = [];
+
 export class VectorManager {
-  static async refreshXpCriteria(): Promise<boolean> {
+  getXpCriteriaList() {
+    return criteria
+  }
+  
+  async refreshXpCriteria(): Promise<boolean> {
     Logger.info('[VectorManager] Starting XP criteria refresh...');
 
-    const criteria: XpCriteriaMetadata[] = await NotionService.fetchXpCriteria();
+    criteria = await NotionService.fetchXpCriteria();
 
     if (!criteria.length) {
       Logger.error('[VectorManager] No XP criteria found. Aborting.');
