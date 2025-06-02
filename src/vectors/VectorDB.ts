@@ -1,14 +1,14 @@
-import { XpCriteria } from '../types/XpCriteria';
+import { XpCriteriaMetadata } from '../types/metadata/XpCriteriaMetadata';
 
 // vectors/VectorDB.ts (example)
 export interface VectorDB {
-  buildIndex(data: XpCriteria[]): void;
+  buildIndex(data: XpCriteriaMetadata[]): void;
 }
 
 export function getVectorDb(): VectorDB {
   // return actual implementation here
   return {
-    buildIndex(_data: XpCriteria[]): void {
+    buildIndex(_data: XpCriteriaMetadata[]): void {
       // implement buildIndex logic here
     }
   };

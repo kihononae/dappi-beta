@@ -1,4 +1,4 @@
-export interface XpCriteria {
+export interface XpCriteriaMetadata {
   name: string;
   type: string;
   description: string;

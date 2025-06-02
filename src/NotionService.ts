@@ -2,7 +2,7 @@
 
 import { Client } from '@notionhq/client';
 import dotenv from 'dotenv';
-import { XpCriteria } from './types/XpCriteria';
+import { XpCriteriaMetadata } from './types/metadata/XpCriteriaMetadata';
 import { Logger } from './Logger';
 
 dotenv.config();
@@ -17,7 +17,7 @@ if (!NOTION_API_KEY || !NOTION_XP_CRITERIA_DB_ID) {
 const notion = new Client({ auth: NOTION_API_KEY });
 
 export class NotionService {
-  static async fetchXpCriteria(): Promise<XpCriteria[]> {
+  static async fetchXpCriteria(): Promise<XpCriteriaMetadata[]> {
     try {
       const response = await notion.databases.query({
         database_id: NOTION_XP_CRITERIA_DB_ID as string,
