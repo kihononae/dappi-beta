@@ -1,30 +1,38 @@
 // services/VectorManager.ts
 
 import { NotionService } from '../NotionService';
-import { getVectorDb } from './VectorDB';
+import { VectorDB } from './VectorDB';
 import { XpCriteriaMetadata } from '../types/metadata/XpCriteriaMetadata';
 import { Logger } from '../Logger';
+import { XpCriteriaVectorDB } from './XpCriteriaVectorDB';
 
-let criteria: XpCriteriaMetadata[] = [];
+let vectorDb: VectorDB<XpCriteriaMetadata>
 
 export class VectorManager {
   getXpCriteriaList() {
-    return criteria
+    return vectorDb
   }
   
   async refreshXpCriteria(): Promise<boolean> {
     Logger.info('[VectorManager] Starting XP criteria refresh...');
 
-    criteria = await NotionService.fetchXpCriteria();
+    const criteria: XpCriteriaMetadata[] = await NotionService.fetchXpCriteria();
 
     if (!criteria.length) {
       Logger.error('[VectorManager] No XP criteria found. Aborting.');
       return false;
     }
 
-    const vectorDb = getVectorDb();
+    vectorDb = new XpCriteriaVectorDB();
 
-    vectorDb.buildIndex(criteria);
+    // Map criteria to VectorDocument format
+    const vectorDocs = criteria.map(item => ({
+      id: item.notion_id,
+      metadata: item,
+      content: `${item.name} ${item.description}`.trim(),
+    }));
+
+    vectorDb.buildIndex(vectorDocs);
 
     Logger.info(`[VectorManager] Vector DB refreshed with ${criteria.length} items.`);
     return true;

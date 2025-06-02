@@ -36,6 +36,7 @@ export class NotionService {
           .map((item: any) => item.plain_text)
           .join('');
 
+        // TODO: Deprecate hard coded ID
         return {
           name,
           type,

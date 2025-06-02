@@ -1,15 +1,8 @@
-import { XpCriteriaMetadata } from '../types/metadata/XpCriteriaMetadata';
+import { VectorDocument } from './VectorDocument';
 
-// vectors/VectorDB.ts (example)
-export interface VectorDB {
-  buildIndex(data: XpCriteriaMetadata[]): void;
-}
-
-export function getVectorDb(): VectorDB {
-  // return actual implementation here
-  return {
-    buildIndex(_data: XpCriteriaMetadata[]): void {
-      // implement buildIndex logic here
-    }
-  };
+export interface VectorDB<TMetadata = Record<string, any>> {
+  buildIndex(docs: VectorDocument<TMetadata>[]): Promise<void>;
+  getVectorList(): Promise<VectorDocument<TMetadata>[]>;
+  getVectorById(id: string): Promise<VectorDocument<TMetadata> | null>;
+  search(query: string, topK?: number): Promise<VectorDocument<TMetadata>[]>;
 }
