@@ -47,9 +47,12 @@ export class NotionService {
         // TODO: Deprecate hard coded ID
         return {
           name,
+          notion_id: page.id,
           type,
           description,
-          notion_id: page.id,
+          // If you have a way to extract these, replace undefined accordingly:
+          slang_description: properties['Slang Description']?.rich_text?.[0]?.plain_text ?? undefined,
+          criteria_size: properties['Criteria Size']?.select?.name ?? '',
         };
       });
     } catch (error) {

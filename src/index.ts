@@ -24,10 +24,16 @@ const vectorManager: VectorManager = new VectorManager();
 
   Logger.info('✅ Vector refresh complete!');
 
-  // Print out all the criteria
-  // Adjust the property/method name as needed
-  Logger.info('All criteria:', vectorManager.getXpCriteriaList());
-
-  // If you need to stringify or format:
-  // Logger.info('All criteria:', JSON.stringify(vectorManager.criteria, null, 2));
+  // Print out the first entry's metadata from the vector DB
+  const vectorDb = vectorManager.getXpCriteriaList();
+  if (vectorDb) {
+    const list = await vectorDb.getVectorList();
+    if (list.length > 0) {
+      Logger.info('First entry:', list[0]);
+    } else {
+      Logger.info('Vector DB is empty.');
+    }
+  } else {
+    Logger.info('Vector DB is not initialized.');
+  }
 })();
