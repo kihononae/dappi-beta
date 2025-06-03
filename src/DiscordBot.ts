@@ -1,9 +1,20 @@
 import { Client, GatewayIntentBits, Message } from 'discord.js';
 import { Logger } from './Logger';
 
+/**
+ * Represents the Discord bot for Dappi.
+ * Handles connecting to Discord, listening for messages, and responding to mentions.
+ */
 export class DiscordBot {
+    /**
+     * The Discord.js client instance.
+     */
     private client: Client;
 
+    /**
+     * Initializes the Discord bot, sets up event listeners, and logs in.
+     * Throws an error if the DISCORD_BOT_TOKEN environment variable is not set.
+     */
     constructor() {
         this.client = new Client({
             intents: [
@@ -26,7 +37,10 @@ export class DiscordBot {
         this.client.on('messageCreate', this.handleMessage.bind(this));
     }
 
-    // This is dappi's message listener
+    /**
+     * Handles incoming messages. Replies "Bye 👋" if the bot is mentioned and the author is not a bot.
+     * @param message - The Discord message object.
+     */
     private async handleMessage(message: Message) {
         // Only reply if the bot is mentioned
         if (message.mentions.has(this.client.user!) && !message.author.bot) {

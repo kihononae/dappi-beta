@@ -1,3 +1,8 @@
+/**
+ * Entry point for the Dappi application.
+ * Initializes the Discord bot and the XP Criteria vector manager,
+ * refreshes the XP Criteria data from Notion, and logs the results.
+ */
 import { DiscordBot } from './DiscordBot';
 import { VectorManager } from './vectors/VectorManager';
 import { Logger } from './Logger';
@@ -7,6 +12,9 @@ new DiscordBot();
 const vectorManager: VectorManager = new VectorManager();
 
 (async () => {
+  /**
+   * Refreshes the XP Criteria vector database and logs the outcome.
+   */
   const success = await vectorManager.refreshXpCriteria();
 
   if (!success) {
